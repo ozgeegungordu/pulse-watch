@@ -1,0 +1,16 @@
+.git
+.github
+node_modules
+**/node_modules
+.env
+.env.*
+**/.env
+**/.env.*
+api/dist
+web/dist
+api/src/generated/prisma
+coverage
+.tmp
+*.log
+npm-debug.log*
+.DS_Store

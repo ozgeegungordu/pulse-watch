@@ -1,0 +1,41 @@
+{
+  "name": "pulse-watch",
+  "version": "1.1.0",
+  "private": true,
+  "description": "Full-stack API uptime and response-time monitoring platform",
+  "license": "MIT",
+  "workspaces": [
+    "api",
+    "web"
+  ],
+  "scripts": {
+    "setup": "node scripts/setup-dev.mjs",
+    "dev": "concurrently --kill-others-on-fail --names API,WEB --prefix-colors blue,magenta \"npm run start:dev --workspace @pulse-watch/api\" \"npm run dev --workspace @pulse-watch/web\"",
+    "dev:api": "npm run start:dev --workspace @pulse-watch/api",
+    "dev:web": "npm run dev --workspace @pulse-watch/web",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "format": "npm run format --workspaces --if-present",
+    "db:up": "docker compose up -d postgres",
+    "db:down": "docker compose down",
+    "db:reset": "docker compose down -v",
+    "db:logs": "docker compose logs -f postgres",
+    "db:generate": "npm run prisma:generate --workspace @pulse-watch/api",
+    "db:migrate": "npm run prisma:migrate --workspace @pulse-watch/api",
+    "db:deploy": "npm run prisma:migrate:deploy --workspace @pulse-watch/api",
+    "db:studio": "npm run prisma:studio --workspace @pulse-watch/api",
+    "prod:up": "docker compose --env-file .env.production -f docker-compose.prod.yml up --build -d",
+    "prod:down": "docker compose --env-file .env.production -f docker-compose.prod.yml down",
+    "doctor": "node scripts/doctor.mjs",
+    "prod:config": "docker compose --env-file .env.production -f docker-compose.prod.yml config",
+    "prod:logs": "docker compose --env-file .env.production -f docker-compose.prod.yml logs -f api web",
+    "prod:ps": "docker compose --env-file .env.production -f docker-compose.prod.yml ps"
+  },
+  "engines": {
+    "node": ">=22.12"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.3"
+  }
+}

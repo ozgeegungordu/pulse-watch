@@ -1,0 +1,38 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test-build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: pulsewatch
+          POSTGRES_PASSWORD: pulsewatch_dev
+          POSTGRES_DB: pulsewatch
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pulsewatch -d pulsewatch"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://pulsewatch:pulsewatch_dev@localhost:5432/pulsewatch?schema=public
+      JWT_SECRET: ci-test-secret-that-is-long-enough
+      ENABLE_SCHEDULER: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm install
+      - run: npm run db:generate
+      - run: npm run db:deploy
+      - run: npm run lint
+      - run: npm run test
+      - run: npm run build

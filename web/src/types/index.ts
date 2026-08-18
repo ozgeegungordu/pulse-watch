@@ -1,0 +1,81 @@
+export type User = { id: string; email: string; name: string | null };
+export type MonitorStatus = 'PENDING' | 'UP' | 'DOWN' | 'PAUSED';
+export type Monitor = {
+  id: string;
+  name: string;
+  url: string;
+  method: string;
+  expectedStatus: number;
+  timeoutMs: number;
+  intervalSec: number;
+  failureThreshold: number;
+  status: MonitorStatus;
+  consecutiveFailures: number;
+  lastCheckedAt: string | null;
+  lastResponseMs: number | null;
+  lastStatusCode: number | null;
+  publicEnabled: boolean;
+  publicSlug: string | null;
+  createdAt: string;
+  updatedAt: string;
+  _count?: { checks: number; incidents: number };
+};
+export type CheckResult = {
+  id?: string;
+  successful: boolean;
+  statusCode: number | null;
+  responseMs: number;
+  errorType?: string | null;
+  errorMessage?: string | null;
+  checkedAt: string;
+};
+export type Incident = {
+  id: string;
+  startedAt: string;
+  resolvedAt: string | null;
+  reason: string | null;
+  monitor?: { id: string; name: string };
+};
+export type MonitorDetail = Monitor & { checks: CheckResult[]; incidents: Incident[] };
+export type MetricWindow = { uptimePct: number; avgResponseMs: number; p95ResponseMs: number; checks: number };
+export type MonitorStats = { last24h: MetricWindow; last7d: MetricWindow };
+export type DashboardSummary = {
+  total: number;
+  operational: number;
+  down: number;
+  paused: number;
+  pending: number;
+  uptimePct: number;
+  avgResponseMs: number;
+  checks24h: number;
+  activeIncidents: number;
+  recentIncidents: Incident[];
+};
+export type NotificationChannel = {
+  id: string;
+  name: string;
+  type: 'EMAIL' | 'SLACK_WEBHOOK' | 'DISCORD_WEBHOOK';
+  destination: string;
+  enabled: boolean;
+  createdAt: string;
+};
+export type NotificationStatus = {
+  emailConfigured: boolean;
+  smtpHost: string | null;
+  smtpFrom: string | null;
+  webhooksEnabled: boolean;
+};
+export type PublicStatus = {
+  name: string;
+  url: string;
+  status: MonitorStatus;
+  lastCheckedAt: string | null;
+  lastResponseMs: number | null;
+  lastStatusCode: number | null;
+  createdAt: string;
+  uptime24h: number;
+  avgResponseMs24h: number;
+  checks24h: number;
+  recentChecks: CheckResult[];
+  incidents: Incident[];
+};
